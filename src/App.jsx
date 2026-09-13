@@ -24,10 +24,11 @@ export default function App(){
  const closeApp=id=>{setOpenApps(cur=>{const next=cur.filter(x=>x.id!==id);if(id===activeId)setActiveId(next.at(-1)?.id||null);return next});};
  const toggleMode=id=>setOpenApps(cur=>cur.map(x=>x.id===id?{...x,mode:x.mode==='window'?'fullscreen':'window'}:x));
  const focusApp=id=>{setActiveId(id);setStageManager(false);setAppSwitcher(false);setNotifications(false);setDockRevealed(false)};
- const onTouchStart=e=>{const p=e.touches[0];touch.current={x:p.clientX,y:p.clientY,edge:p.clientY<58,bottom:p.clientY>window.innerHeight-34,time:Date.now()};};
+ const revealDock=()=>{setDockRevealed(true);window.setTimeout(()=>setDockRevealed(false),2800)};
+ const onTouchStart=e=>{const p=e.touches[0];touch.current={x:p.clientX,y:p.clientY,edge:p.clientY<58,bottom:p.clientY>window.innerHeight-24,time:Date.now()};};
  const onTouchEnd=e=>{const s=touch.current,p=e.changedTouches[0];const dx=p.clientX-s.x,dy=p.clientY-s.y;const fast=Date.now()-s.time<850;touch.current={x:0,y:0,edge:false,bottom:false,time:0};if(!fast)return;
    if(s.edge&&dy>65&&Math.abs(dy)>Math.abs(dx)){if(s.x>window.innerWidth*.68){setControlCenter(true);setNotifications(false)}else if(s.x<window.innerWidth*.32){setNotifications(true);setControlCenter(false)}else{setNotifications(false);setControlCenter(false);setAppSwitcher(false)}return;}
-   if(s.bottom&&dy< -45&&Math.abs(dy)>Math.abs(dx)){if(openApps.length){setDockRevealed(true);window.setTimeout(()=>setDockRevealed(false),4200)}return;}
+   if(s.bottom&&dy< -45&&Math.abs(dy)>Math.abs(dx)){if(openApps.length){if(dy<=-120&&activeId){setDockRevealed(false);closeApp(activeId)}else{revealDock()}}return;}
    if(Math.abs(dx)>70&&!openApps.length&&!library&&!lockScreen){setPage(p=>Math.max(0,Math.min(pages.length-1,p+(dx<0?1:-1))))}
  };
  const shellClass=['tablet-shell',openApps.length?'app-running':'',dockRevealed?'dock-revealed':''].filter(Boolean).join(' ');
