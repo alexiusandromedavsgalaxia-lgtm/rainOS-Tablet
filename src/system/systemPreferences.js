@@ -1,4 +1,4 @@
-const KEY = 'rainos.preferences.v3';
+const KEY = 'rainos.preferences.v4';
 
 export const defaultPreferences = {
   appearance: 'dark',
@@ -13,6 +13,9 @@ export const defaultPreferences = {
   reducedMotion: false,
   boldText: false,
   appIconSize: 'medium',
+  multitaskingMode: 'windows',
+  dockAlwaysVisible: false,
+  menuBarGesture: true,
 };
 
 export function loadPreferences() {
