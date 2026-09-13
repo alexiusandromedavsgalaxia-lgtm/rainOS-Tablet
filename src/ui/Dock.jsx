@@ -1,4 +1,5 @@
 import AppIcon from './AppIcon.jsx';
+import iconSprite from '../assets/icons/system-icons.svg';
 
 export default function Dock({ apps, onOpen, onSwitcher }) {
   return (
@@ -13,12 +14,7 @@ export default function Dock({ apps, onOpen, onSwitcher }) {
         </button>
         <button className="dock-library dock-utility" onClick={() => window.dispatchEvent(new CustomEvent('rainos-app-library'))} aria-label="Biblioteca de apps">
           <span className="dock-library-glyph" aria-hidden="true">
-            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-              <rect x="3" y="3" width="7" height="7" rx="2" />
-              <rect x="14" y="3" width="7" height="7" rx="2" />
-              <rect x="3" y="14" width="7" height="7" rx="2" />
-              <rect x="14" y="14" width="7" height="7" rx="2" />
-            </svg>
+            <svg viewBox="0 0 64 64" focusable="false"><use href={`${iconSprite}#library`} /></svg>
           </span>
         </button>
       </div>
