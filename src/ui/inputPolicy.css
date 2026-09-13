@@ -1,0 +1,8 @@
+/* rainOS interaction policy: shell controls are not page-zoomable; content viewers opt in. */
+html,body,#root{overflow:hidden;overscroll-behavior:none;touch-action:none}
+.tablet-shell{overflow:hidden;overscroll-behavior:none;touch-action:none}
+.home,.app-grid,.dock,.app-icon,.control-handle,.window-backdrop{touch-action:none}
+.window-content{overflow:auto;overscroll-behavior:contain;touch-action:auto}
+.document-viewer,.pdf-viewer,.file-preview,.photos-viewer{overflow:auto;overscroll-behavior:contain;touch-action:pan-x pan-y pinch-zoom}
+.document-viewer img,.pdf-viewer img,.pdf-viewer canvas,.photos-viewer img{max-width:none;touch-action:pan-x pan-y pinch-zoom}
+.system-file-app{touch-action:auto}
