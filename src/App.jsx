@@ -60,7 +60,14 @@ export default function App() {
   const clock = useMemo(() => time.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' }), [time]);
   const date = useMemo(() => time.toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long' }), [time]);
   const dockApps = dockIds.map(getApp).filter(Boolean);
-  const finishSetup = () => { localStorage.setItem('rainos.setupComplete', 'true'); setSetup(false); };
+  const finishSetup = values => {
+    const next = values || {};
+    if (next.appearance) updatePreference('appearance', next.appearance);
+    if (typeof next.wifi === 'boolean') updatePreference('wifi', next.wifi);
+    localStorage.setItem('rainos.setupComplete', 'true');
+    localStorage.setItem('rainos.setupProfile', JSON.stringify(next));
+    setSetup(false);
+  };
   const pref = (key, value) => updatePreference(key, value);
 
   const openApp = app => {
@@ -87,9 +94,7 @@ export default function App() {
     <button className="control-handle" onClick={() => setControlCenter(v => !v)} aria-label="Abrir Centro de Control">⌄</button>
     <button className="stage-handle" onClick={() => setStageManager(v => !v)} aria-label="Abrir Organizador Visual"><span /><span /><span /></button>
 
-    {openApps.map(app => app.id === activeId && <AppWindow key={app.id} app={app} mode={app.mode} onClose={() => closeApp(app.id)} onToggleMode={() => toggleMode(app.id)} onOpenStageManager={() => setStageManager(true)}>
-      <AppContent app={app} />
-    </AppWindow>)}
+    {openApps.map(app => app.id === activeId && <AppWindow key={app.id} app={app} mode={app.mode} onClose={() => closeApp(app.id)} onToggleMode={() => toggleMode(app.id)} onOpenStageManager={() => setStageManager(true)}><AppContent app={app} /></AppWindow>)}
 
     {stageManager && <aside className="stage-manager" aria-label="Organizador Visual">
       <div className="stage-manager-header"><span>Organizador Visual</span><button onClick={() => setStageManager(false)}>×</button></div>
@@ -97,7 +102,7 @@ export default function App() {
         {openApps.length === 0 && <div className="stage-empty"><b>Abre una app</b><span>Las ventanas recientes aparecerán aquí.</span></div>}
         {openApps.map(app => <button key={app.id} className={`stage-card ${activeId === app.id ? 'active' : ''}`} onClick={() => focusApp(app.id)}><AppIcon app={app} onOpen={() => focusApp(app.id)} size="small" disabled /><span>{app.name}</span></button>)}
       </div>
-      <div className="stage-manager-footer">Arrastra y organiza tus ventanas en grupos de trabajo.</div>
+      <div className="stage-manager-footer">Organiza las apps abiertas en espacios de trabajo.</div>
     </aside>}
 
     {controlCenter && <ControlCenter wifi={prefs.wifi} bluetooth={prefs.bluetooth} brightness={prefs.brightness} sound={prefs.sound} onWifi={() => pref('wifi', !prefs.wifi)} onBluetooth={() => pref('bluetooth', !prefs.bluetooth)} onBrightness={v => pref('brightness', v)} onSound={v => pref('sound', v)} />}
