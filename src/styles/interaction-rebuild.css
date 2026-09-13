@@ -1,3 +1,4 @@
+@import './interaction-polish.css';
 /* rainOS interaction layer: navigation, Dock and app switching */
 .dock{position:absolute!important;left:50%!important;right:auto!important;bottom:18px!important;top:auto!important;transform:translateX(-50%)!important;display:flex!important;flex-direction:row!important;align-items:center!important;width:max-content!important;max-width:min(92vw,900px)!important;min-height:76px!important;padding:10px 14px!important;gap:10px!important;border-radius:25px!important;z-index:50!important}
 .dock-favorites{display:flex!important;flex-direction:row!important;align-items:center!important;gap:8px!important}
