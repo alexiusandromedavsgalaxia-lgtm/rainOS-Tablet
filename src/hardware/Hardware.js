@@ -22,6 +22,7 @@ import Haptics from './Haptics.js';
 import Motherboard from './Motherboard.js';
 import Cooling from './Cooling.js';
 import Antennas from './Antennas.js';
+import Network from './Network.js';
 
 export const HardwareState = Object.freeze({ OFF: 'off', INITIALIZING: 'initializing', READY: 'ready', SUSPENDED: 'suspended', FAULT: 'fault' });
 
@@ -54,6 +55,7 @@ export class Hardware {
     this.motherboard = new Motherboard(options.motherboard);
     this.cooling = new Cooling(options.cooling);
     this.antennas = new Antennas(options.antennas);
+    this.network = new Network({ wifi: this.wifi, bluetooth: this.bluetooth, cellular: this.cellular });
     this.devices = new Map();
     this._registerDevices();
   }
@@ -75,55 +77,21 @@ export class Hardware {
     return this.state;
   }
 
-  suspend() {
-    if (this.state !== HardwareState.READY) return this.state;
-    this.power.sleep();
-    this.display.sleep();
-    this.state = HardwareState.SUSPENDED;
-    return this.state;
-  }
-
-  resume() {
-    if (this.state !== HardwareState.SUSPENDED) return this.state;
-    this.power.wake();
-    this.display.wake();
-    this.state = HardwareState.READY;
-    return this.state;
-  }
-
-  shutdown() {
-    this.display.shutdown();
-    this.gpu.shutdown();
-    this.cpu.shutdown();
-    this.internalMemory.unmount();
-    this.motherboard.powerOff();
-    this.power.shutdown();
-    this.state = HardwareState.OFF;
-    return this.state;
-  }
-
+  suspend() { if (this.state !== HardwareState.READY) return this.state; this.power.sleep(); this.display.sleep(); this.cpu.sleep(); this.state = HardwareState.SUSPENDED; return this.state; }
+  resume() { if (this.state !== HardwareState.SUSPENDED) return this.state; this.power.wake(); this.display.wake(); this.cpu.wake(); this.state = HardwareState.READY; return this.state; }
+  shutdown() { this.display.shutdown(); this.gpu.shutdown(); this.cpu.shutdown(); this.internalMemory.unmount(); this.motherboard.powerOff(); this.power.shutdown(); this.state = HardwareState.OFF; return this.state; }
   refreshDisplay() { return this.display.refresh(); }
 
   diagnostics() {
-    const report = {
-      state: this.state,
-      uptimeMs: this.bootTimestamp && this.state !== HardwareState.OFF ? Date.now() - this.bootTimestamp : 0,
-      devices: {},
-    };
-    for (const [name, device] of this.devices) {
-      report.devices[name] = typeof device.getStatus === 'function' ? device.getStatus() : typeof device.snapshot === 'function' ? device.snapshot() : { available: true };
-    }
+    const report = { state: this.state, uptimeMs: this.bootTimestamp && this.state !== HardwareState.OFF ? Date.now() - this.bootTimestamp : 0, devices: {} };
+    for (const [name, device] of this.devices) report.devices[name] = typeof device.getStatus === 'function' ? device.getStatus() : typeof device.snapshot === 'function' ? device.snapshot() : { available: true };
     report.healthy = this.state !== HardwareState.FAULT && this.battery.temperatureC < 60;
     this.lastDiagnostic = report;
     return report;
   }
 
   getDevice(name) { return this.devices.get(name) ?? null; }
-
-  _registerDevices() {
-    const entries = { cpu: this.cpu, gpu: this.gpu, ram: this.ram, internalMemory: this.internalMemory, display: this.display, touchscreen: this.touchscreen, battery: this.battery, power: this.power, audio: this.audio, speakers: this.speakers, microphones: this.microphones, cameras: this.cameras, sensors: this.sensors, wifi: this.wifi, bluetooth: this.bluetooth, cellular: this.cellular, gps: this.gps, nfc: this.nfc, usb: this.usb, buttons: this.buttons, haptics: this.haptics, motherboard: this.motherboard, cooling: this.cooling, antennas: this.antennas };
-    for (const [name, device] of Object.entries(entries)) this.devices.set(name, device);
-  }
+  _registerDevices() { const entries = { cpu: this.cpu, gpu: this.gpu, ram: this.ram, internalMemory: this.internalMemory, display: this.display, touchscreen: this.touchscreen, battery: this.battery, power: this.power, audio: this.audio, speakers: this.speakers, microphones: this.microphones, cameras: this.cameras, sensors: this.sensors, wifi: this.wifi, bluetooth: this.bluetooth, cellular: this.cellular, gps: this.gps, nfc: this.nfc, usb: this.usb, buttons: this.buttons, haptics: this.haptics, motherboard: this.motherboard, cooling: this.cooling, antennas: this.antennas, network: this.network }; for (const [name, device] of Object.entries(entries)) this.devices.set(name, device); }
 }
 
 export default Hardware;
