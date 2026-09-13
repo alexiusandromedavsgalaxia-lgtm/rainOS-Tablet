@@ -2,14 +2,10 @@ import '../styles/system-chrome.css';
 
 export default function StatusBar({ time, wifi, bluetooth = true, battery = 100, charging = false }) {
   const batteryLevel = Math.max(0, Math.min(100, Math.round(battery)));
-  const now = new Date();
-  const date = now.toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long' });
-  const prettyDate = date.charAt(0).toUpperCase() + date.slice(1);
   return (
     <header className="statusbar" aria-label="Barra de estado">
       <div className="status-leading">
         <time className="status-time">{time}</time>
-        <span className="status-date">{prettyDate}</span>
       </div>
       <div className="status-indicators" aria-label="Estado del dispositivo">
         <span className="status-icon" title={wifi ? 'Wi‑Fi conectado' : 'Wi‑Fi desactivado'} aria-label={wifi ? 'Wi‑Fi conectado' : 'Wi‑Fi desactivado'}>{wifi ? '⌁' : '×'}</span>
