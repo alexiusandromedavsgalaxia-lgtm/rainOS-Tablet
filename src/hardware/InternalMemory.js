@@ -1,7 +1,7 @@
 export const StorageState = Object.freeze({ OFF: 'off', MOUNTED: 'mounted', BUSY: 'busy', READ_ONLY: 'read-only', FAULT: 'fault' });
 
 export class InternalMemory {
-  constructor({ capacityGB = 128, type = 'UFS', blockSizeKB = 4 } = {}) {
+  constructor({ capacityGB = 1024, type = 'NMVe', blockSizeKB = 4 } = {}) {
     this.capacityGB = capacityGB;
     this.capacityBytes = Math.floor(capacityGB * 1024 ** 3);
     this.type = type;
