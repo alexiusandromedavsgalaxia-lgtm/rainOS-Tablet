@@ -23,3 +23,4 @@ export { default as Haptics } from './Haptics.js';
 export { default as Motherboard } from './Motherboard.js';
 export { default as Cooling } from './Cooling.js';
 export { default as Antennas } from './Antennas.js';
+export { default as Network } from './Network.js';
