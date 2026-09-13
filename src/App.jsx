@@ -9,6 +9,7 @@ import Music from './apps/Music.jsx';
 import Clock from './apps/Clock.jsx';
 import AppStore from './apps/AppStore.jsx';
 import SetupAssistant from './apps/SetupAssistant.jsx';
+import AdditionalSystemApp from './apps/AdditionalSystemApps.jsx';
 import { Files, Notes, Photos, Safari, Weather } from './apps/SystemApps.jsx';
 import AppIcon from './ui/AppIcon.jsx';
 import AppWindow from './ui/AppWindow.jsx';
@@ -17,25 +18,32 @@ import Dock from './ui/Dock.jsx';
 import StatusBar from './ui/StatusBar.jsx';
 
 const dockIds = ['safari', 'messages', 'music', 'settings'];
+const additionalSystemAppIds = new Set([
+  'camera', 'contacts', 'maps', 'reminders', 'freeform', 'home', 'shortcuts',
+  'findmy', 'facetime', 'books', 'podcasts', 'tv', 'tips', 'voice',
+]);
+
+const appComponents = {
+  calculator: Calculator,
+  settings: Settings,
+  calendar: Calendar,
+  mail: Mail,
+  messages: Messages,
+  music: Music,
+  clock: Clock,
+  appstore: AppStore,
+  files: Files,
+  notes: Notes,
+  photos: Photos,
+  safari: Safari,
+  weather: Weather,
+};
 
 function AppContent({ app }) {
-  const content = {
-    calculator: Calculator,
-    settings: Settings,
-    calendar: Calendar,
-    mail: Mail,
-    messages: Messages,
-    music: Music,
-    clock: Clock,
-    appstore: AppStore,
-    files: Files,
-    notes: Notes,
-    photos: Photos,
-    safari: Safari,
-    weather: Weather,
-  };
-  const Component = content[app.id];
-  return Component ? <Component /> : <div className="empty-app"><span>{app.glyph}</span><h2>{app.name}</h2><p>Aplicación del sistema rainOS Tablet.</p></div>;
+  const Component = appComponents[app.id];
+  if (Component) return <Component />;
+  if (additionalSystemAppIds.has(app.id)) return <AdditionalSystemApp id={app.id} />;
+  return <div className="empty-app"><h2>{app.name}</h2><p>Aplicación del sistema rainOS Tablet.</p></div>;
 }
 
 export default function App() {
@@ -48,13 +56,29 @@ export default function App() {
   const [sound, setSound] = useState(70);
   const [setup, setSetup] = useState(() => localStorage.getItem('rainos.setupComplete') !== 'true');
 
-  useEffect(() => { const id = setInterval(() => setTime(new Date()), 1000); return () => clearInterval(id); }, []);
-  useEffect(() => { const onKeyDown = event => { if (event.key === 'Escape') { setOpenApp(null); setControlCenter(false); } }; window.addEventListener('keydown', onKeyDown); return () => window.removeEventListener('keydown', onKeyDown); }, []);
+  useEffect(() => {
+    const id = setInterval(() => setTime(new Date()), 1000);
+    return () => clearInterval(id);
+  }, []);
+
+  useEffect(() => {
+    const onKeyDown = event => {
+      if (event.key === 'Escape') {
+        setOpenApp(null);
+        setControlCenter(false);
+      }
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, []);
 
   const clock = useMemo(() => time.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' }), [time]);
   const date = useMemo(() => time.toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long' }), [time]);
   const dockApps = dockIds.map(getApp).filter(Boolean);
-  const finishSetup = () => { localStorage.setItem('rainos.setupComplete', 'true'); setSetup(false); };
+  const finishSetup = () => {
+    localStorage.setItem('rainos.setupComplete', 'true');
+    setSetup(false);
+  };
 
   return <main className="tablet-shell" style={{ filter: `brightness(${0.55 + brightness / 180})` }}>
     <div className="wallpaper" />
@@ -62,7 +86,7 @@ export default function App() {
     <section className="home">
       <div className="welcome"><p>{date}</p><h1>{clock}</h1></div>
       <div className="app-grid">{apps.map(app => <AppIcon key={app.id} app={app} onOpen={setOpenApp} />)}</div>
-      <div className="page-indicator" aria-label="Página 1 de 1"><span className="active" /><span /></div>
+      <div className="page-indicator" aria-label="Página de inicio"><span className="active" /></div>
     </section>
     <Dock apps={dockApps} onOpen={setOpenApp} />
     <button className="control-handle" onClick={() => setControlCenter(value => !value)} aria-label="Abrir Centro de Control">⌄</button>
