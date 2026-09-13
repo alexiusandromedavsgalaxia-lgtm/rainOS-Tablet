@@ -1,22 +1,60 @@
-/* rainOS 27 system chrome: top status area + horizontal Dock. */
-.statusbar{position:fixed!important;z-index:60!important;top:0!important;left:0!important;right:0!important;height:54px!important;padding:8px 24px!important;display:grid!important;grid-template-columns:1fr auto 1fr!important;align-items:center!important;pointer-events:none!important;color:#fff!important;background:linear-gradient(180deg,rgba(8,9,13,.42),rgba(8,9,13,0))!important;border:0!important;box-shadow:none!important;backdrop-filter:none!important}
-.status-time{justify-self:start;font-size:15px!important;font-weight:650!important;letter-spacing:-.15px;text-shadow:0 1px 7px rgba(0,0,0,.45)!important}
-.status-title{justify-self:center;font-size:13px!important;font-weight:600!important;opacity:.78!important;letter-spacing:.1px!important}
-.status-indicators{justify-self:end;display:flex!important;align-items:center!important;gap:9px!important;font-size:13px!important;font-weight:600!important;text-shadow:0 1px 7px rgba(0,0,0,.45)!important}
-.status-indicators>span{display:inline-flex!important;align-items:center!important;justify-content:center!important;min-width:17px!important;height:22px!important}
-.signal-bars{font-size:10px!important;letter-spacing:-3px!important;transform:scaleX(.8)!important}
-.dock{position:fixed!important;z-index:55!important;left:50%!important;bottom:max(14px,env(safe-area-inset-bottom))!important;transform:translateX(-50%)!important;width:max-content!important;max-width:calc(100vw - 34px)!important;min-height:86px!important;padding:10px 12px!important;display:flex!important;align-items:center!important;justify-content:center!important;gap:9px!important;border-radius:27px!important;background:rgba(245,245,250,.18)!important;border:1px solid rgba(255,255,255,.23)!important;box-shadow:0 18px 55px rgba(0,0,0,.34),inset 0 1px rgba(255,255,255,.3)!important;backdrop-filter:blur(30px) saturate(1.5)!important;-webkit-backdrop-filter:blur(30px) saturate(1.5)!important}
-.dock-favorites{display:flex!important;align-items:center!important;gap:9px!important}
-.dock .app-icon{width:68px!important;min-width:68px!important;display:flex!important;flex-direction:column!important;align-items:center!important;gap:0!important}
+/* rainOS 27 system chrome: compact status area, app menu space and horizontal Dock. */
+.statusbar{position:fixed!important;z-index:100!important;top:0!important;left:0!important;right:0!important;height:48px!important;padding:5px 22px!important;display:grid!important;grid-template-columns:auto 1fr auto!important;align-items:center!important;pointer-events:none!important;color:#fff!important;background:linear-gradient(180deg,rgba(5,7,12,.58),rgba(5,7,12,0))!important;border:0!important;box-shadow:none!important;backdrop-filter:none!important}
+.status-leading{grid-column:1!important;display:flex!important;align-items:baseline!important;gap:10px!important;min-width:0!important;white-space:nowrap!important}
+.status-time{display:inline-block!important;font-size:15px!important;line-height:1!important;font-weight:650!important;letter-spacing:-.25px!important;text-shadow:0 1px 8px rgba(0,0,0,.5)!important}
+.status-date{display:inline-block!important;font-size:11px!important;line-height:1!important;font-weight:520!important;letter-spacing:-.05px!important;opacity:.76!important;text-shadow:0 1px 7px rgba(0,0,0,.45)!important}
+.status-indicators{grid-column:3!important;justify-self:end!important;display:flex!important;align-items:center!important;gap:8px!important;font-size:12px!important;font-weight:600!important;text-shadow:0 1px 7px rgba(0,0,0,.5)!important}
+.status-indicators>span{display:inline-flex!important;align-items:center!important;justify-content:center!important;min-width:16px!important;height:20px!important}
+.status-icon{font-size:14px!important;opacity:.94!important}
+.signal-bars{gap:1px!important}
+.signal-bars i{display:block!important;width:3px!important;border-radius:2px!important;background:currentColor!important;opacity:.9!important}
+.signal-bars i:nth-child(1){height:5px}.signal-bars i:nth-child(2){height:8px}.signal-bars i:nth-child(3){height:11px}.signal-bars i:nth-child(4){height:14px}
+.battery{position:relative!important;width:23px!important;min-width:23px!important;height:11px!important;border:1.5px solid currentColor!important;border-radius:3px!important;overflow:visible!important}
+.battery:after{content:"";position:absolute;right:-3.5px;top:3px;width:2px;height:5px;border-radius:0 2px 2px 0;background:currentColor}
+.battery i{position:absolute;left:1px;top:1px;bottom:1px;border-radius:1px;background:currentColor;display:block}
+.battery b{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-size:8px;z-index:2}
+.battery-percent{font-size:11px!important;min-width:auto!important;opacity:.9}
+
+/* In fullscreen the app owns the canvas below the status area. Its controls are not a macOS-style floating title bar. */
+.window-mode-fullscreen{position:fixed!important;inset:0!important;z-index:40!important;background:transparent!important}
+.window-mode-fullscreen .app-window{position:absolute!important;inset:0!important;border-radius:0!important;box-shadow:none!important;background:transparent!important}
+.window-mode-fullscreen .app-window-toolbar{display:none!important}
+.window-mode-fullscreen .window-content{position:absolute!important;inset:48px 0 0!important;border-radius:0!important;overflow:auto!important}
+.window-mode-fullscreen .window-resize-handle{display:none!important}
+
+/* Windowed + Stage Manager chrome: controls live beside the app name, like the iPad window header. */
+.window-mode-window,.window-mode-stage{z-index:45!important}
+.window-mode-window .app-window-toolbar,.window-mode-stage .app-window-toolbar{height:46px!important;display:flex!important;align-items:center!important;justify-content:space-between!important;padding:0 11px 0 12px!important;background:rgba(24,26,34,.62)!important;border-bottom:1px solid rgba(255,255,255,.11)!important;backdrop-filter:blur(26px) saturate(1.55)!important;-webkit-backdrop-filter:blur(26px) saturate(1.55)!important}
+.window-leading{display:flex!important;align-items:center!important;gap:12px!important;min-width:0!important}
+.window-controls{display:flex!important;align-items:center!important;gap:7px!important;flex:none!important}
+.window-control{width:12px!important;height:12px!important;padding:0!important;border:0!important;border-radius:50%!important;box-shadow:inset 0 1px rgba(255,255,255,.35)!important;cursor:pointer!important}
+.window-control.close{background:#ff5f57!important}.window-control.minimize{background:#febc2e!important}.window-control.expand{background:#28c840!important}
+.window-title{display:flex!important;align-items:center!important;gap:7px!important;min-width:0!important;font-size:13px!important;color:rgba(255,255,255,.9)!important}
+.window-title strong{overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important}
+.window-title-icon{width:23px!important;height:23px!important;border-radius:6px!important;flex:none!important}
+.window-actions{display:flex!important;align-items:center!important;gap:4px!important}
+.window-action{width:30px!important;height:30px!important;border:0!important;border-radius:9px!important;background:rgba(255,255,255,.08)!important;color:rgba(255,255,255,.86)!important;cursor:pointer!important}
+.window-action:hover{background:rgba(255,255,255,.15)!important}
+.window-mode-window .window-content,.window-mode-stage .window-content{overflow:auto!important}
+
+/* Horizontal iPad-style Dock. */
+.dock{position:fixed!important;z-index:95!important;left:50%!important;bottom:max(12px,env(safe-area-inset-bottom))!important;transform:translateX(-50%)!important;width:max-content!important;max-width:calc(100vw - 40px)!important;min-height:78px!important;padding:8px 10px!important;display:flex!important;align-items:center!important;justify-content:center!important;gap:8px!important;border-radius:24px!important;background:rgba(242,244,250,.19)!important;border:1px solid rgba(255,255,255,.22)!important;box-shadow:0 16px 48px rgba(0,0,0,.34),inset 0 1px rgba(255,255,255,.28)!important;backdrop-filter:blur(34px) saturate(1.55)!important;-webkit-backdrop-filter:blur(34px) saturate(1.55)!important}
+.dock-favorites{display:flex!important;align-items:center!important;gap:8px!important}
+.dock .app-icon{width:61px!important;min-width:61px!important;display:flex!important;flex-direction:column!important;align-items:center!important;gap:0!important}
 .dock .app-icon-name{display:none!important}
-.dock .app-icon .icon-art{width:62px!important;height:62px!important;border-radius:17px!important;box-shadow:inset 0 1px rgba(255,255,255,.45),0 7px 18px rgba(0,0,0,.22)!important}
-.dock-divider{width:1px!important;height:54px!important;flex:none!important;background:rgba(255,255,255,.22)!important;margin:0 3px!important}
-.dock-switcher,.dock-library{width:62px!important;height:62px!important;flex:none!important;border:0!important;border-radius:17px!important;color:#fff!important;background:rgba(255,255,255,.13)!important;display:grid!important;place-items:center!important;cursor:pointer!important;box-shadow:inset 0 1px rgba(255,255,255,.22)!important}
-.dock-switcher-glyph{width:27px;height:27px;display:grid;grid-template-columns:repeat(3,1fr);gap:3px;align-items:end}
-.dock-switcher-glyph i{display:block;border-radius:3px;background:currentColor;opacity:.9}
-.dock-switcher-glyph i:nth-child(1){height:12px}.dock-switcher-glyph i:nth-child(2){height:20px}.dock-switcher-glyph i:nth-child(3){height:15px}
-.dock-library{font-size:26px!important;font-weight:500!important}
+.dock .app-icon .icon-art{width:56px!important;height:56px!important;border-radius:15px!important;box-shadow:inset 0 1px rgba(255,255,255,.45),0 6px 16px rgba(0,0,0,.22)!important}
+.dock-divider{width:1px!important;height:48px!important;flex:none!important;background:rgba(255,255,255,.22)!important;margin:0 3px!important}
+.dock-switcher,.dock-library{width:56px!important;height:56px!important;flex:none!important;border:0!important;border-radius:15px!important;color:#fff!important;background:rgba(255,255,255,.12)!important;display:grid!important;place-items:center!important;cursor:pointer!important;box-shadow:inset 0 1px rgba(255,255,255,.2)!important}
+.dock-switcher-glyph{width:25px;height:25px;display:grid;grid-template-columns:repeat(3,1fr);gap:3px;align-items:end}.dock-switcher-glyph i{display:block;border-radius:3px;background:currentColor;opacity:.9}.dock-switcher-glyph i:nth-child(1){height:11px}.dock-switcher-glyph i:nth-child(2){height:19px}.dock-switcher-glyph i:nth-child(3){height:14px}
+.dock-library{font-size:24px!important;font-weight:500!important}
 .dock button:active,.dock .app-icon:active{transform:scale(.91)!important}
-:root[data-appearance="light"] .statusbar{color:#111!important;background:linear-gradient(180deg,rgba(255,255,255,.34),rgba(255,255,255,0))!important}
-:root[data-appearance="light"] .dock{background:rgba(255,255,255,.48)!important;border-color:rgba(0,0,0,.12)!important;box-shadow:0 18px 55px rgba(0,0,0,.16),inset 0 1px rgba(255,255,255,.75)!important}
-@media(max-width:700px){.statusbar{padding-inline:14px!important}.status-title{display:none!important}.dock{min-height:74px!important;padding:7px!important;gap:5px!important}.dock .app-icon{width:55px!important;min-width:55px!important}.dock .app-icon .icon-art,.dock-switcher,.dock-library{width:52px!important;height:52px!important;border-radius:15px!important}.dock-divider{height:44px!important}}
+
+/* Notification Center + Lock Screen are system layers, never underneath an app canvas. */
+.notification-center{position:fixed!important;z-index:180!important;inset:0 0 0 auto!important;width:min(430px,100vw)!important;padding:58px 20px 30px!important;overflow:auto!important;color:#fff!important;background:rgba(18,20,28,.48)!important;backdrop-filter:blur(34px) saturate(1.5)!important;-webkit-backdrop-filter:blur(34px) saturate(1.5)!important;border-left:1px solid rgba(255,255,255,.12)!important;box-shadow:-20px 0 60px rgba(0,0,0,.2)!important}
+.notification-center header{display:flex!important;justify-content:space-between!important;align-items:flex-start!important}.notification-center header span{font-size:13px!important;opacity:.68!important}.notification-center h2{margin:3px 0 0!important;font-size:26px!important;letter-spacing:-.7px!important}.notification-center header button{width:34px!important;height:34px!important;border:0!important;border-radius:50%!important;background:rgba(255,255,255,.12)!important;color:#fff!important;font-size:22px!important}.notification-empty{min-height:65vh!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;text-align:center!important;gap:7px!important;opacity:.78!important}.notification-bell{width:64px!important;height:64px!important;border-radius:50%!important;display:grid!important;place-items:center!important;background:rgba(255,255,255,.11)!important;font-size:27px!important;margin-bottom:8px!important}.notification-empty strong{font-size:16px!important}.notification-empty span{font-size:12px!important;opacity:.62!important}
+.lock-screen{position:fixed!important;z-index:200!important;inset:0!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:flex-start!important;padding-top:11vh!important;color:#fff!important;text-align:center!important;background:rgba(8,10,16,.32)!important;background-size:cover!important;backdrop-filter:blur(18px) saturate(1.15)!important;-webkit-backdrop-filter:blur(18px) saturate(1.15)!important}.lock-time{font-size:clamp(72px,13vw,142px)!important;line-height:.92!important;font-weight:250!important;letter-spacing:-6px!important;text-shadow:0 5px 30px rgba(0,0,0,.3)!important}.lock-date{margin-top:10px!important;font-size:17px!important;font-weight:550!important;opacity:.9!important}.lock-card{margin-top:auto!important;margin-bottom:100px!important;padding:14px 22px!important;border-radius:20px!important;background:rgba(255,255,255,.1)!important;border:1px solid rgba(255,255,255,.14)!important;backdrop-filter:blur(20px)!important}.lock-card strong{display:block!important;font-size:15px!important}.lock-card span{display:block!important;margin-top:3px!important;font-size:12px!important;opacity:.7!important}.lock-dismiss{position:absolute!important;bottom:28px!important;width:46px!important;height:46px!important;border:1px solid rgba(255,255,255,.2)!important;border-radius:50%!important;background:rgba(255,255,255,.11)!important;color:#fff!important;font-size:20px!important}
+
+:root[data-appearance="light"] .statusbar{color:#111!important;background:linear-gradient(180deg,rgba(255,255,255,.46),rgba(255,255,255,0))!important}
+:root[data-appearance="light"] .dock{background:rgba(255,255,255,.5)!important;border-color:rgba(0,0,0,.12)!important;box-shadow:0 18px 55px rgba(0,0,0,.16),inset 0 1px rgba(255,255,255,.78)!important}
+:root[data-appearance="light"] .window-mode-window .app-window-toolbar,:root[data-appearance="light"] .window-mode-stage .app-window-toolbar{background:rgba(248,248,252,.72)!important;color:#111!important}
+@media(max-width:700px){.statusbar{padding-inline:14px!important}.status-date{font-size:10px!important}.status-leading{gap:7px!important}.dock{min-height:68px!important;padding:6px!important;gap:4px!important}.dock .app-icon{width:51px!important;min-width:51px!important}.dock .app-icon .icon-art,.dock-switcher,.dock-library{width:48px!important;height:48px!important;border-radius:13px!important}.dock-divider{height:40px!important}.notification-center{width:100vw!important}}
