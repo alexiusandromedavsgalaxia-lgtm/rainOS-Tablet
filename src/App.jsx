@@ -25,7 +25,7 @@ export default function App(){
  const toggleMode=id=>setOpenApps(cur=>cur.map(x=>x.id===id?{...x,mode:x.mode==='window'?'fullscreen':'window'}:x));
  const focusApp=id=>{setActiveId(id);setStageManager(false);setAppSwitcher(false);setNotifications(false);setDockRevealed(false)};
  const revealDock=()=>{setDockRevealed(true);window.setTimeout(()=>setDockRevealed(false),2800)};
- const onTouchStart=e=>{const p=e.touches[0];touch.current={x:p.clientX,y:p.clientY,edge:p.clientY<58,bottom:p.clientY>window.innerHeight-24,time:Date.now()};};
+ const onTouchStart=e=>{const p=e.touches[0];touch.current={x:p.clientX,y:p.clientY,edge:p.clientY<58,bottom:p.clientY>window.innerHeight-96,time:Date.now()};};
  const onTouchEnd=e=>{const s=touch.current,p=e.changedTouches[0];const dx=p.clientX-s.x,dy=p.clientY-s.y;const fast=Date.now()-s.time<850;touch.current={x:0,y:0,edge:false,bottom:false,time:0};if(!fast)return;
    if(s.edge&&dy>65&&Math.abs(dy)>Math.abs(dx)){if(s.x>window.innerWidth*.68){setControlCenter(true);setNotifications(false)}else if(s.x<window.innerWidth*.32){setNotifications(true);setControlCenter(false)}else{setNotifications(false);setControlCenter(false);setAppSwitcher(false)}return;}
    if(s.bottom&&dy< -45&&Math.abs(dy)>Math.abs(dx)){if(openApps.length){if(dy<=-120&&activeId){setDockRevealed(false);closeApp(activeId)}else{revealDock()}}return;}
