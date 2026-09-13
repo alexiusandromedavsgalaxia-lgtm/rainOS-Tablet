@@ -4,6 +4,7 @@ import App from './App.jsx';
 import './styles.css';
 import './styles/ipados27.css';
 import './styles/interaction-rebuild.css';
+import './styles/system-redesign.css';
 import './ui/inputPolicy.css';
 
 createRoot(document.getElementById('root')).render(
